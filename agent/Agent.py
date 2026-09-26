@@ -5,10 +5,11 @@ to `resolutions`.
 """
 
 import json
+import os
 from confluent_kafka import Consumer, Producer
-from Graph import AGENT_GRAPH
+from graph import AGENT_GRAPH
 
-BOOTSTRAP_SERVERS = "localhost:9092"
+BOOTSTRAP_SERVERS = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
 INPUT_TOPIC = "tickets"
 OUTPUT_TOPIC = "resolutions"
 
