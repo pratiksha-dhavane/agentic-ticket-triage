@@ -40,7 +40,8 @@ def main():
     consumer = Consumer({
         "bootstrap.servers": BOOTSTRAP_SERVERS,
         "group.id": "agent-service",
-        "auto.offset.reset": "earliest"
+        "auto.offset.reset": "earliest",
+        "enable.auto.commit": False
     })
 
     consumer.subscribe([INPUT_TOPIC])
@@ -68,12 +69,24 @@ def main():
             result = process_ticket(ticket)
             print(f" -> decision: {result['decision']} ({result['category']})")
 
+            delivery_status = {"success": False, "error": None}
+
+            def _on_delivery(err, _msg, status=delivery_status):
+                status["success"] = err is None
+                status["error"] = err
+
             producer.produce(
                 OUTPUT_TOPIC,
                 key = ticket["customer_id"].encode("utf-8"),
-                value = json.dumps(result).encode("utf-8")
+                value = json.dumps(result).encode("utf-8"),
+                callback = _on_delivery
             )
-            producer.poll(0)
+            producer.flush()
+
+            if delivery_status["success"]:
+                consumer.commit(message=msg)
+            else:
+                print(f" DELIVERY FAILED ({delivery_status['error']}) - NOT committing offset, will retry ticket on restart")
 
     except KeyboardInterrupt:
         print("\nShutting down agent...")
