@@ -7,10 +7,11 @@ Uses confluent-kafka (librdkafka wrapper) - standard production client.
 import json
 import time
 import uuid
+import os
 import random
 from confluent_kafka import Producer
 
-BOOTSTRAP_SERVERS = "localhost:9092"
+BOOTSTRAP_SERVERS = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
 TOPIC = "tickets"
 
 sample_tickets = [
