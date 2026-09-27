@@ -14,8 +14,11 @@ spec:
     spec:
       containers:
         - name: agent
-          image: pratikshadhavane/agentic-ticket-triage-agent:v1
+          image: pratikshadhavane/agentic-ticket-triage-agent:v2
+          imagePullPolicy: Always
           env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
             - name: KAFKA_BOOTSTRAP_SERVERS
               value: "kafka:9092"
             - name: GEMINI_API_KEY

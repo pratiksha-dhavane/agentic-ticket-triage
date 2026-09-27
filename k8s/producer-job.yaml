@@ -9,7 +9,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: producer
-          image: pratikshadhavane/agentic-ticket-triage-producer:v1
+          image: pratikshadhavane/agentic-ticket-triage-producer:v2
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
               value: "kafka:9092"
